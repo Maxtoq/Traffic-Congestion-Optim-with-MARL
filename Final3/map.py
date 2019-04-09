@@ -6,7 +6,7 @@ from random import randint
 import constants as tc
 import numpy as np
 from Agent import Agent
-from Data_parsed_files import Data_parsed_file
+from DataParser import DataParser
 
 """Quelques variable globales pour le fun"""
 junctionID = 'gneJ33' #pour le module de stats
@@ -152,5 +152,5 @@ if __name__ == "__main__":
     # traci starts sumo as a subprocess and then this script connects and runs
     traci.start([sumoBinary, "-c", "map.sumocfg" , "--tripinfo-output", "data.xml"])
     run()
-    data = Data_parsed_file("data.xml")
+    data = DataParser("data.xml")
 

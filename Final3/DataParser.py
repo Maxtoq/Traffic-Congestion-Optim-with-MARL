@@ -1,7 +1,7 @@
 import pandas as pd
 import xml.etree.cElementTree as et
 
-class Data_parsed_file:
+class DataParser:
 
 	def __init__ (self, name, id_list=None):
 		self.name = name
