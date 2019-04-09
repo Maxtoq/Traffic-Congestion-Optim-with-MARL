@@ -9,18 +9,18 @@ class QLearningUnit:
     # Number of edges
     NB_EDGES = 29
     # Number of destination edges
-    NB_DEST_EDGE = 4
+    NB_DEST_EDGE = 3
     # Number of discrete values for the 'number of car in one edge'
     NB_CARNB_IN_EDGE = 4
 
     # ACTIONS
     # Number of different action
-    ACTION_NB = 5
+    ACTION_NB = 3
 
     def __init__(self):
         # Q-table, contains all the Q-values for all the (state-action) couples
-        self.qtable = np.zeros((self.NB_EDGES * self.NB_DEST_EDGE * 
-                                (self.NB_CARNB_IN_EDGE ** self.ACTION_NB), self.ACTION_NB))
+        self.qtable = np.zeros((self.NB_EDGES * 2 * self.NB_DEST_EDGE 
+                                * (self.NB_CARNB_IN_EDGE ** 3), 3))
         
         # Exploration rate
         self.eps = 1
@@ -35,12 +35,17 @@ class QLearningUnit:
 
     def get_state_id(self, state):
         """ Returns the id of a state in the Q-table. """
-        #return state[0] * self.NB_EDGES * self.NB_DEST_EDGE + state[1] * self.SHARENB_NB_VAL + state[2]
-        return 1
+        # state = (# of the edge (0-28), orientation (0-1), destination (0-2), nb of cars on edge 1 (0-3), nb of cars on edge 2 (0-3), nb of cars on edge 3 (0-3))
+        return (state[0] * 2 * self.NB_DEST_EDGE * (self.NB_CARNB_IN_EDGE ** 3) 
+                + state[1] * self.NB_DEST_EDGE * (self.NB_CARNB_IN_EDGE ** 3)
+                + state[2] * (self.NB_CARNB_IN_EDGE ** 3) 
+                + state[3] * (self.NB_CARNB_IN_EDGE ** 2)
+                + state[4] * self.NB_CARNB_IN_EDGE
+                + state[5])
 
     def exploration(self):
         """ Returns a random choice of action. """
-        return rd.randint(0, self.ACTION_NB)
+        return rd.randint(0, 2)
 
     def exploitation(self, state):
         """ Choose the action with the biggest Q-value in the Q-table. """
@@ -68,4 +73,4 @@ class QLearningUnit:
 
 ql = QLearningUnit()
 
-print(ql.get_state_id(()))
+print(ql.get_state_id((1, 1, 0, 0, 0, 0)))
