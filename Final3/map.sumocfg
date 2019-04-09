@@ -3,7 +3,7 @@
 
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/netconvertConfiguration.xsd">
     <input>
-        <net-file value="map.net.xml"/>
+        <net-file value="lastnet.net.xml"/>
         <route-files value="map.rou.xml"/>
         <additional-files value="map.add.xml"/>
     </input>
