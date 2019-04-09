@@ -1,0 +1,39 @@
+<routes>
+   <vType id="car"
+   			vClass="passenger" length="5" accel="3.5" decel="2.2"
+   			sigma="1.5" maxSpeed="15"/>
+
+   <vType id="ev"
+      		vClass="emergency" length="7" accel="5.5" decel="2.2" sigma="1.0"
+      		maxSpeed="20" guiShape="emergency" speedFactor="2.0"
+      		minGapLat="0.2"/>
+
+   
+	
+	
+	<!--
+	
+	<flow id="eveflow" type="ev" beg="0" end="100" number="1" from="-gneE15" to="-gneE112"/>
+	
+	<flow id="f1" type="car" beg="0" end="2000" number="3" from="gneE35" to="gneE83"/>
+	<flow id="f2" type="car" beg="0" end="3000" number="5" from="gneE1" to="gneE15"/>
+	<flow id="f3" type="car" beg="0" end="3000" number="5" from="gneE11" to="gneE28"/>
+	<flow id="f4" type="car" beg="0" end="3000" number="5" from="gneE24" to="-gneE12"/>
+	<flow id="f5" type="car" beg="0" end="3000" number="5" from="gneE52" to="-gneE42"/>
+	<flow id="f6" type="car" beg="0" end="3000" number="5" from="gneE97" to="-gneE28"/>
+	<flow id="f7" type="car" beg="0" end="3000" number="5" from="gneE89" to="-gneE38"/>
+	
+	-->
+	
+	<!-- STATIC GENERATION OF VEHICLES
+	<vehicle id="110" type="car" route="route_0" depart="0"/>
+    <vehicle id="1" type="car" route="route_1" depart="3"/>
+    <vehicle id="2" type="car" route="route_0" depart="6"/>
+    <vehicle id="3" type="car" route="route_1" depart="9"/>
+    <vehicle id="4" type="car" route="route_0" depart="12"/>
+
+    <vehicle id="E0" type="ev" route="route_0" depart="16"/>
+
+	-->
+	
+</routes>
