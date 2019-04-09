@@ -13,14 +13,20 @@ class QLearningUnit:
     # Number of discrete values for the 'number of car in one edge'
     NB_CARNB_IN_EDGE = 4
 
-    # ACTIONS
-    # Number of different action
-    ACTION_NB = 3
-
     def __init__(self):
         # Q-table, contains all the Q-values for all the (state-action) couples
+        # States: - # of the edge
+        #         - orientation
+        #         - destination node
+        #         - nb of cars on edge 1
+        #         - nb of cars on edge 2
+        #         - nb of cars on edge 3
+        # Actions: go left, go straight, go right
         self.qtable = np.zeros((self.NB_EDGES * 2 * self.NB_DEST_EDGE 
                                 * (self.NB_CARNB_IN_EDGE ** 3), 3))
+
+        self.actions = []
+        self.rewards = []
         
         # Exploration rate
         self.eps = 1
@@ -42,6 +48,10 @@ class QLearningUnit:
                 + state[3] * (self.NB_CARNB_IN_EDGE ** 2)
                 + state[4] * self.NB_CARNB_IN_EDGE
                 + state[5])
+
+    def update_q_value(self, state, action, reward):
+        """ Updates a given Q value with the given reward. """
+        self.qtable[self.get_state_id(state), action] += reward
 
     def exploration(self):
         """ Returns a random choice of action. """
@@ -69,6 +79,30 @@ class QLearningUnit:
             return act
         else:
             return np.argmax(self.qtable[state_id])
+
+    def choose_action(self, state, possible_actions):
+        action = -1
+
+        while True:
+            if rd.random() > self.eps:
+                # Do exploitation
+                action = self.exploitation(state)
+            else:
+                # Do exploration
+                action = self.exploration()
+
+            # Check if the action is right
+            if action in possible_actions:
+                break
+            else:
+                # Give very bad reward to impossible action and get new action
+                self.update_q_value(state, action, -1000)
+        
+        self.actions
+
+        # Decay exploration rate
+        if self.eps > self.min_eps:
+            self.eps -= self.decay_eps
 
 
 ql = QLearningUnit()
