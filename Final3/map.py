@@ -76,7 +76,6 @@ def MaintainAgents(AgentList, I, Study_ID = None):
 				Study_ID.insert(len(Study_ID), I)
 			else : 
 				AgentList.insert(int(d), RandomAgent(I))
-				
 			POP += 1
 			
 			I += 1
@@ -118,7 +117,7 @@ def run(Study_ID, I):
 		traci.simulationStep()
 		POP  -= traci.simulation.getArrivedNumber()
 		for a in AgentList:
-			if(a.id < I-4):
+			if(a.id < I):
 				a.update_edge()
 		
 		I = MaintainAgents(AgentList, I,  Study_ID)
