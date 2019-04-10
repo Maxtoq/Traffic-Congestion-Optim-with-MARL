@@ -46,13 +46,16 @@ class Map:
 
 class Agent:
 
+	ID = 0
 	ROAD_ID = 0
 	MAP = MapInfo()
 	
 	def __init__(self, id):
 		self.map = Map() # del
 	
-		self.id = str(id)
+		self.id = Agent.ID
+		Agent.ID += 1
+		
 		self.type = "car" # del
 		self.edge = ""
 		self.ChangeEdge = False

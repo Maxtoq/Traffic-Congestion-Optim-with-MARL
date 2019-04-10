@@ -49,6 +49,12 @@ class QLearningUnit:
         # Discount rate
         self.dr = 0.9
 
+    def save_q_table(self):
+        self.qtable.dump('q_table.dat')
+
+    def load_q_table(self):
+        self.qtable = np.load('q_table.dat')
+
     def get_state_id(self, state):
         """ Returns the id of a state in the Q-table. """
         # state = (# of the edge (0-28), orientation (0-1), destination (0-2), nb of cars on edge 1 (0-3), nb of cars on edge 2 (0-3), nb of cars on edge 3 (0-3))
@@ -129,3 +135,7 @@ class QLearningUnit:
         new_q = self.lr * (reward + self.dr * np.amax(self.qtable[self.get_state_id(use_new_state)]) 
                  - self.qtable[self.get_state_id(use_curr_state), action])
         self.update_q_value(use_curr_state, action, new_q)
+
+
+q = QLearningUnit()
+q.save_q_table()

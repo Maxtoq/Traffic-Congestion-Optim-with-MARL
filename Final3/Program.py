@@ -47,6 +47,8 @@ class Program:
         for i in range(number):
             self.rand_agents.append(RandomAgent('rd' + str(i)))
 
+    def maintain_rand_agents()
+
     def run(self):
         """ Run the main execution. """
         end = False
