@@ -88,10 +88,6 @@ class RandomAgent(Agent):
 
 			EdgeL = traci.edge.getIDList()
 
-			"""print("EdgeL = " + str(len(EdgeL)))	
-			print("a = " + str(al))
-			print("beta = " + str(be))"""
-
 			self.pos = EdgeL[start_edge]
 			self.dest = EdgeL[dest_edge]
 
@@ -99,12 +95,7 @@ class RandomAgent(Agent):
 			self.Nodes = traci.simulation.findRoute(
 			    self.pos, self.dest, self.type).edges
 
-			"""print("START : "+ str(id))
-			print(self.route)
-			print(self.route.edges)
-			print(self.type)"""
-
-			if (len(self.Nodes) > 4):
+			if (len(self.Nodes) > 3):
 				print("out")
 				break
 			else:
