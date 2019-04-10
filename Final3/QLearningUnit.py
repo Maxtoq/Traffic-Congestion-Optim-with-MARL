@@ -6,11 +6,11 @@ warnings.filterwarnings('ignore')
 
 def discr_pop(pop):
     """ Discretise a population value. """
-    elif (pop < 11):
+    if(pop < 11):
         return 0
-    elif (pop < 21):
+    elif(pop < 21):
         return 1
-    elif (pop < 36):
+    elif(pop < 36):
         return 2
     else:
         return 3
@@ -135,7 +135,3 @@ class QLearningUnit:
         new_q = self.lr * (reward + self.dr * np.amax(self.qtable[self.get_state_id(use_new_state)]) 
                  - self.qtable[self.get_state_id(use_curr_state), action])
         self.update_q_value(use_curr_state, action, new_q)
-
-
-q = QLearningUnit()
-q.save_q_table()

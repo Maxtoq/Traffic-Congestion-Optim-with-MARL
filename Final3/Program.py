@@ -31,13 +31,13 @@ class Program:
 
     def __init__(self):
         # Create random agents
-        self.rand_agents = []
+        self.rand_agents = dict()
 
         # Create dummy agents
-        self.dummy_agents = []
+        self.dummy_agents = dict()
 
         # Create our agents
-        self.our_agents = []
+        self.our_agents = dict()
 
         # Initialize the QLearning unit
         self.qlu = QLearningUnit()
@@ -45,15 +45,21 @@ class Program:
     def create_rand_agents(self, number):
         """ Create a list of agents of the given type. """
         for i in range(number):
-            self.rand_agents.append(RandomAgent('rd' + str(i)))
+            self.rand_agents[Agent.ID] = RandomAgent('rd')
 
-    def maintain_rand_agents()
+    def maintain_rand_agents(self):
+        arrived = traci.simulation.getArrivedIDList()
+
+        for a in arrived:
+            if int(a) in self.rand_agents:
+                del self.rand_agents[int(a)]
+                self.rand_agents[Agent.ID] = RandomAgent('rd')
 
     def run(self):
         """ Run the main execution. """
         end = False
         pop = 100
-        nb_step = 500
+        nb_step = 1000
 
         # Get options
         options = get_options()
@@ -80,11 +86,19 @@ class Program:
         # Main loop
         for i in range(nb_step):
             traci.simulationStep()
+
+            self.maintain_rand_agents()
+
+            if i > 99:
+                if ((i - 100) % 15 == 0):
+                    # Create a dummy
+                    self.dummy_agents[Agent.ID] = InterestingAgent('e')
+                    
         
         traci.close()
         sys.stdout.flush()
         
-        data = DataParser("data.xml")
+        data = DataParser("data.xml", list(self.dummy_agents.keys()))
 
 
 if __name__ == "__main__":
