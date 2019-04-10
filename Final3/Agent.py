@@ -82,21 +82,25 @@ class Agent:
 		
 		return getLastStepVehicleNumber(name) + getLastStepVehicleNumber(opposite)
 	
-	def give_my_edge(self):
-		traci.route.getEdges(traci.vehicle.getRouteID(str(self.id)))[traci.vehicle.getRouteIndex(str(self.id))]
-		
+	
 	def get_Edge_Vehicle_At(self, id):
-		return get_Edge_ID(traci.vehicle.getRoadID(str(id)))
+		#return self.get_Edge_ID(traci.vehicle.getRoadID(str(id)))
+		return traci.vehicle.getRoadID(str(id))
 		
 	def update_edge(self):
-		if( self.id in  traci.simulation.getLoadedIDList()):#si ce vehicle exista
-			if(self.edge == ""):
-				self.edge = self.give_my_edge()
-				print("new name : " + self.edge)
-				
-			if(self.edge != traci.vehicle.getRoadID(str(self.id))):
-				self.edge = self.give_my_edge()
+		#if( self.id in  traci.simulation.getLoadedIDList()):#si ce vehicle exista
+		if(self.edge == ""):
+			#if( self.id in  traci.simulation.getLoadedIDList()):
+			self.edge = self.get_Edge_Vehicle_At(str(self.id))
+			print("Empty : " + str(self.edge))
+		else:
+			if(self.edge is not self.get_Edge_Vehicle_At(str(self.id))):#pour le flag
+				self.edge = self.get_Edge_Vehicle_At(str(self.id))
+				print("new namebis : " + str(self.edge))
 				self.ChangeEdge = True
+			else:
+				self.edge = self.get_Edge_Vehicle_At(str(self.id))
+				print("new ns : " + str(self.edge))
 	
 	def get_Edge_ID(self, node):
 		ret = 0
@@ -140,11 +144,7 @@ class Agent:
 		#if(int(traci.vehicle.getRouteIndex(str(self.id))) != -1):
 		#	edge = traci.route.getEdges(traci.vehicle.getRouteID(str(self.id)))[traci.vehicle.getRouteIndex(str(self.id))]
 		#else:
-		#	print("WHAAAT")
-			
-			
-		print("SEE " + str(edge))
-		
+		#	print("WHAAAT")		
 		return self.MAP.info[edge]
 	
 	def Pop_at_Next(self, edge):
@@ -195,21 +195,51 @@ class Agent:
 		else:
 			opt_1 = self.Options_Available(rightest)
 			
-			print(" opt " + str(opt))
-			print("right = " + str(rightest))
-			print("A :: " + str(self.get_Dest()))
-			print("Right opt " + str(opt_1))
+			print(" 1er choix " + str(opt))
+			print("Route avant::" + str(self.get_Dest()))
+			print(" choix a droite " + str(opt_1))
 			
 			
 			self.set_Dest(str(opt_1[0]))
-			print("Post :: " + str(self.get_Dest()))
+			print("Route apres :: " + str(self.get_Dest()))
+			
+			
+			
+	def turn_stright(self):
+		opt = self.Options_Available(self.edge)
+		i = 0
+		straightest = opt[1]
 		
+		if(straightest == ""):
+			return ("WHUT?")
+		else:
+			opt_1 = self.Options_Available(straightest)
+			
+			print(" 1er choix " + str(opt))
+			print("Route avant::" + str(self.get_Dest()))
+			print(" choix en face " + str(opt_1))
 			
 			
-			
-	#def turn_stright(self):
+			self.set_Dest(str(opt_1[0]))
+			print("Route apres :: " + str(self.get_Dest()))
 	
-	#def turn_left(self):
+	def turn_left(self):
+		opt = self.Options_Available(self.edge)
+		i = 0
+		leftest = opt[0]
+		
+		if(rightest == ""):
+			return ("WHUT?")
+		else:
+			opt_1 = self.Options_Available(leftest)
+			
+			print(" 1er choix " + str(opt))
+			print("Route avant::" + str(self.get_Dest()))
+			print(" choix a gauche " + str(opt_1))
+			
+			
+			self.set_Dest(str(opt_1[0]))
+			print("Route apres :: " + str(self.get_Dest()))
 	
 
 class RandomAgent(Agent):

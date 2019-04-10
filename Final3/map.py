@@ -91,6 +91,7 @@ def Interact(AgentList):
 	v = raw_input()
 	if(v != ""):
 		Ag = AgentList[int(v)]
+		print("Agent : " + str(int(v))) 
 		Ag.turn_right()
 	
 	#v = raw_input("give edge")
