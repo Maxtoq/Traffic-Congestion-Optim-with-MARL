@@ -270,24 +270,27 @@ class RandomAgent(Agent):
 
 		while ("ON A PAS UNE ROUTE VALIDE"):
 			while (start_edge == dest_edge):
-				start_edge = rd.randint(0, traci.edge.getIDCount()-1)
-				dest_edge = rd.randint(0, traci.edge.getIDCount()-1)
+				#start_edge = rd.randint(0, traci.edge.getIDCount()-1)
+				#dest_edge = rd.randint(0, traci.edge.getIDCount()-1)
+
+				start_edge = rd.randint(0, len(self.MAP.info)-1)
+				dest_edge = rd.randint(0, len(self.MAP.info)-1)
 
 			i = 0
 			j = 0
 			#while(j != 2):
-				for it in self.MAP.info:
-					if(i == start_edge):
-						self.pos = it
-						j += 1
-					if(i == dest_edge):
-						self.dest = it
-						j += 1
-					if(j == 2):
-						break
-					i += 1
-					if(i > len(self.MAP.info)):
-						i = 0
+			for it in self.MAP.info:
+				if(i == start_edge):
+					self.pos = it
+					j += 1
+				if(i == dest_edge):
+					self.dest = it
+					j += 1
+				if(j == 2):
+					break
+				i += 1
+				if(i > len(self.MAP.info)):
+					i = 0
 			#EdgeL = traci.edge.getIDList()
 
 			#self.pos = EdgeL[start_edge]
