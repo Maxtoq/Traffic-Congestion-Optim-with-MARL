@@ -123,11 +123,41 @@ class InterestingAgent(Agent):
 
 	def find_interesting_route(self):
 		""" Find an interesting route. """
-		self.start_n = rd.randint(0, 2)
-		self.end_n = self.start_n
+		# self.start_n = rd.randint(0, 2)
+		# self.end_n = self.start_n
 
-		while (self.start_n == self.end_n):
-			self.end_n = rd.randint(0, 2)
+		# while (self.start_n == self.end_n):
+			# self.end_n = rd.randint(0, 2)
+			
+		StartE = ["E0", "-E18",  "-E7"]
+		EndE = ["-E0","E1", "-E24", "-E7", "-E17", "E18"]
+		
+		start = rd.randint(0, 2)
+		if(start == 0):
+			end = rd.randint(2, 5)
+			start = StartE[start]
+			end = EndE[end]
+		elif(start == 1):
+			end = rd.randint(0, 3)
+			start = StartE[start]
+			end = EndE[end]
+		elif(start == 2):
+			end = 2
+			while(end == 2 or end == 3):
+				end = rd.randint(0, 5)
+				start = StartE[start]
+				end = EndE[end]
+
+		self.route = traci.simulation.findRoute(start, end, self.type)
+		self.Nodes = traci.simulation.findRoute(start, end, self.type).edges
+
+		traci.route.add("rd" + str(Agent.ROAD_ID), self.Nodes)
+		traci.vehicle.add(str(self.id), "rd"+str(Agent.ROAD_ID), str(self.type))
+
+		Agent.ROAD_ID += 1
+		
+		self.start_n = int(start)
+		self.end_n = int(end)
 
 	def get_path(self):
 		""" Get the path to complete the route with SUMO's algo. """
