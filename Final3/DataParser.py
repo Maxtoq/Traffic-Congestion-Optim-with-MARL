@@ -12,7 +12,7 @@ class DataParser:
 		df = pd.DataFrame(columns=dfcols)
 		for child in parsedXML.getroot():
 			tripinfo = child.get('tripinfo')
-			Id = int(child.attrib.get('id'))
+			Id = child.attrib.get('id')
 			vType = child.attrib.get('vType')
 			departLane = child.attrib.get('departLane')
 			arrivalLane = child.attrib.get('arrivalLane')
