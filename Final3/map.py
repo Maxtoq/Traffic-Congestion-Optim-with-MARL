@@ -40,7 +40,8 @@ def get_options():
 
 			
 
-def CreateAgents(AgentList, i,  Study_ID = None ):	
+def CreateAgents(AgentList, Study_ID = None ):	
+	i = 0
 	while i < N:
 		print("Creating " + str(i))
 		if Study_ID is not None:
@@ -87,12 +88,14 @@ def Interact(AgentList):
 
 	print(traci.vehicle.getIDList())
 	print("Select a vehicle (by id) \n")
-	v = input()
-
-	Ag = AgentList[v]
-	v = raw_input("give edge")
-	print(Ag.map.get_Pnd_At_Edge(v))
+	v = raw_input()
+	if(v != ""):
+		Ag = AgentList[int(v)]
+		Ag.turn_right()
 	
+	#v = raw_input("give edge")
+	#print(Ag.map.get_Pnd_At_Edge(v))
+	#
 	#v=raw_input("New destination ?")
 	#Ag.set_Dest(v)
 	
@@ -110,14 +113,15 @@ def run(Study_ID, I):
 	#Initialisation post step 1
 	
 	AgentList = list()
-	I = CreateAgents(AgentList, I, Study_ID)
+	I = CreateAgents(AgentList, Study_ID)
 	POP = N
 	
 	while (POP > 0 and step < 1000): #SECONDE CONDITION TEMPORAIRE
 		traci.simulationStep()
 		POP  -= traci.simulation.getArrivedNumber()
+		
 		for a in AgentList:
-			if(a.id < I):
+			if(a.id < I-1):
 				a.update_edge()
 		
 		I = MaintainAgents(AgentList, I,  Study_ID)
@@ -125,29 +129,11 @@ def run(Study_ID, I):
 		print(str(step) + " - pop : " + str(POP))
 
 		#User interaction
-		if (step % 100 == 0 ):
+		if (step % 20 == 0 ):
 			"""global N 
 			N += 1"""
-			#Interact(AgentList)
-			#go = 0
+			Interact(AgentList)
 			
-			
-		###Data Recovery
-		"""
-		scResults = traci.junction.getContextSubscriptionResults(junctionID)
-		print(traci.junction.getContextSubscriptionResults(junctionID))
-		
-		halting = 0
-		if scResults:
-			relSpeeds = [d[tc.VAR_SPEED] / d[tc.VAR_ALLOWED_SPEED] for d in scResults.values()]
-			# compute values corresponding to summary-output
-			running = len(relSpeeds)
-			halting = len([1 for d in scResults.values() if d[tc.VAR_SPEED] < 0.1])
-			meanSpeedRelative = sum(relSpeeds) / running
-			timeLoss = (1 - meanSpeedRelative) * running * stepLength
-			print(traci.simulation.getTime(), timeLoss, halting)
-		
-		"""
 
 		step += 1
 	

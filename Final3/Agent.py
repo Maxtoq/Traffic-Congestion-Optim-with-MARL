@@ -61,8 +61,8 @@ class Agent:
 		self.ChangeEdge = False
 		
 	#GETTERSs
-	#def get_Dest(self):
-	#	return traci.vehicle.getRoute(str(self.id))
+	def get_Dest(self):
+		return traci.vehicle.getRoute(str(self.id))
 		
 	#def get_Vitesse(self):
 	#	return traci.vehicle.getRoute(str(self.id))
@@ -83,17 +83,20 @@ class Agent:
 		return getLastStepVehicleNumber(name) + getLastStepVehicleNumber(opposite)
 	
 	def give_my_edge(self):
-		traci.vehicle.getRouteIndex(self.id)
+		traci.route.getEdges(traci.vehicle.getRouteID(str(self.id)))[traci.vehicle.getRouteIndex(str(self.id))]
+		
 	def get_Edge_Vehicle_At(self, id):
-		return get_Edge_ID(traci.vehicle.getRouteIndex(id))
+		return get_Edge_ID(traci.vehicle.getRoadID(str(id)))
 		
 	def update_edge(self):
-		if(self.edge == ""):
-			self.edge = traci.vehicle.getRoadID(str(self.id))
-			
-		if(self.edge != traci.vehicle.getRoadID(str(self.id))):
-			self.edge = traci.vehicle.getRoadID(str(self.id))
-			self.ChangeEdge = True
+		if( self.id in  traci.simulation.getLoadedIDList()):#si ce vehicle exista
+			if(self.edge == ""):
+				self.edge = self.give_my_edge()
+				print("new name : " + self.edge)
+				
+			if(self.edge != traci.vehicle.getRoadID(str(self.id))):
+				self.edge = self.give_my_edge()
+				self.ChangeEdge = True
 	
 	def get_Edge_ID(self, node):
 		ret = 0
@@ -130,7 +133,19 @@ class Agent:
 		
 		#Renvoie les options de direction et l edge associe
 		#VERIFIER QUE LE EDGE EST UN NOM COMPREHENSIBLE
-		return MAP.info[edge]
+		
+		#edge = traci.vehicle.getRoadID(str(self.id))
+		
+		
+		#if(int(traci.vehicle.getRouteIndex(str(self.id))) != -1):
+		#	edge = traci.route.getEdges(traci.vehicle.getRouteID(str(self.id)))[traci.vehicle.getRouteIndex(str(self.id))]
+		#else:
+		#	print("WHAAAT")
+			
+			
+		print("SEE " + str(edge))
+		
+		return self.MAP.info[edge]
 	
 	def Pop_at_Next(self, edge):
 			#renvoie un tuple avec la population des prochains edges
@@ -146,7 +161,7 @@ class Agent:
 		
 		return ret
 		
-	def leftest(self, triple):
+	def leftest(self, triple):#obsolete
 	#renvoie l'edge le plus a gauche - ON SUPPOSE SANS CUL DE SAC
 		ret = ""
 		if(triple[0] != ""):
@@ -163,19 +178,33 @@ class Agent:
 		
 	
 	def turn_right(self):# """ ATTENTION IL NE CREE QU'UN CHEMIN PARTIEL  """
-		opt = Options_Available(self.edge)
+		opt = self.Options_Available(self.edge)
 		i = 0
 		rightest = opt[i]
 		while(rightest != ""):
 			if(i<3):
 				i += 1
-			if(opt[i] != ""):
-				rightest = opt[i]
+				if(i == 3):
+					break;
+				else:
+					if(opt[i] != ""):
+						rightest = opt[i]
 			
 		if(rightest == ""):
 			return ("WHUT?")
 		else:
-			opt_1 = Options_Available(leftest(opt))
+			opt_1 = self.Options_Available(rightest)
+			
+			print(" opt " + str(opt))
+			print("right = " + str(rightest))
+			print("A :: " + str(self.get_Dest()))
+			print("Right opt " + str(opt_1))
+			
+			
+			self.set_Dest(str(opt_1[0]))
+			print("Post :: " + str(self.get_Dest()))
+		
+			
 			
 			
 	#def turn_stright(self):
