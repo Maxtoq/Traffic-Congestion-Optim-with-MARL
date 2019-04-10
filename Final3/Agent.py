@@ -151,13 +151,20 @@ class Agent:
 			#renvoie un tuple avec la population des prochains edges
 		
 		opt = Options_Available(edge) #renvoie ( id_edge ou "", , )
-		ret = (-1, -1, -1)
+		a = -1
+		b = -1
+		c = -1
 		
-		for it in opt:
-			if(it == ""):
-				print("-")
-			else:
-				it = traci.edge.getLastStepVehicleNumber(it)
+		
+		if(opt[0] == "" or opt[2] == "" or opt[1] == ""):
+			print("-")
+		
+		a = traci.edge.getLastStepVehicleNumber(opt[0])
+		b = traci.edge.getLastStepVehicleNumber(opt[1])
+		c = traci.edge.getLastStepVehicleNumber(opt[2])
+		
+		ret = (a, b, c)
+			
 		
 		return ret
 		
@@ -260,10 +267,21 @@ class RandomAgent(Agent):
 				start_edge = rd.randint(0, traci.edge.getIDCount()-1)
 				dest_edge = rd.randint(0, traci.edge.getIDCount()-1)
 
-			EdgeL = traci.edge.getIDList()
+			i = 0
+			j = 0
+			for it in self.MAP:
+				if(i == start_edge):
+					self.pos = it
+					j += 1
+				if(i == dest_edge):
+					self.dest = it
+					j += 1
+				if(j == 2):
+					break
+			#EdgeL = traci.edge.getIDList()
 
-			self.pos = EdgeL[start_edge]
-			self.dest = EdgeL[dest_edge]
+			#self.pos = EdgeL[start_edge]
+			#self.dest = EdgeL[dest_edge]
 
 			self.route = traci.simulation.findRoute(self.pos, self.dest, self.type)
 			self.Nodes = traci.simulation.findRoute(
