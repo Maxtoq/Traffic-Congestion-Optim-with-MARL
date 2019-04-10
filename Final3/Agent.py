@@ -83,30 +83,30 @@ class Agent:
 		return getLastStepVehicleNumber(name) + getLastStepVehicleNumber(opposite)
 	
 	
-	def get_Edge_Vehicle_At(self, id):
+	def get_Edge_Vehicle_At(self):
 		#return self.get_Edge_ID(traci.vehicle.getRoadID(str(id)))
-		return traci.vehicle.getRoadID(str(id))
+		return traci.vehicle.getRoadID(str(self.id))
 		
 	def update_edge(self):
 		#if( self.id in  traci.simulation.getLoadedIDList()):#si ce vehicle exista
 		if(self.edge == ""):
 			#if( self.id in  traci.simulation.getLoadedIDList()):
-			self.edge = self.get_Edge_Vehicle_At(str(self.id))
+			self.edge = self.get_Edge_Vehicle_At()
 			print("Empty : " + str(self.edge))
 		else:
-			if(self.edge is not self.get_Edge_Vehicle_At(str(self.id))):#pour le flag
-				self.edge = self.get_Edge_Vehicle_At(str(self.id))
+			if(self.edge is not self.get_Edge_Vehicle_At()):#pour le flag
+				self.edge = self.get_Edge_Vehicle_At()
 				print("new namebis : " + str(self.edge))
 				self.ChangeEdge = True
 			else:
-				self.edge = self.get_Edge_Vehicle_At(str(self.id))
+				self.edge = self.get_Edge_Vehicle_At()
 				print("new ns : " + str(self.edge))
 	
 	def isArrived(self):
 		if(self.get_Dest()[len(self.get_Dest())] == get_Edge_Vehicle_At(str(self.id))):
-			return true
+			return True
 		else:
-			return false
+			return False
 	
 	def get_Edge_ID(self, node):
 		ret = 0
