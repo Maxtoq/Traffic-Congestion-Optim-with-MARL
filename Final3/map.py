@@ -5,7 +5,7 @@ from random import randint
 
 import constants as tc
 import numpy as np
-from Agent import Agent
+from Agent import *
 from DataParser import DataParser
 
 """Quelques variable globales pour le fun"""
@@ -40,7 +40,7 @@ def CreateAgents(AgentList):
 	i = 0
 		
 	while i < N:
-		AgentList.insert(i , Agent(i))
+		AgentList.insert(i , RandomAgent(i))
 		i += 1
 		
 		
@@ -52,12 +52,12 @@ def MaintainAgents(AgentList):
 	
 	if (len(Arrived) > 0):
 		for d in Arrived:
-			AgentList.insert(int(d), Agent(int(d)))
+			AgentList.insert(int(d), RandomAgent(int(d)))
 			
 	i = traci.simulation.getMinExpectedNumber()
 	if(i != (N-1)):
 		while(i < N):
-			AgentList.insert(i , Agent(i))
+			AgentList.insert(i , RandomAgent(i))
 			i += 1
 			POP += 1
 	
