@@ -1,3 +1,12 @@
+"""
+DEST 0 = E18
+DEST 1 = -E7
+DEST 2 = -E0
+
+"""
+
+from mapinfo import *
+
 import os
 import sys
 import random as rd
@@ -38,12 +47,15 @@ class Map:
 class Agent:
 
 	ROAD_ID = 0
+	MAP = MapInfo()
 	
 	def __init__(self, id):
 		self.map = Map() # del
 	
 		self.id = str(id)
 		self.type = "car" # del
+		self.edge = ""
+		self.ChangeEdge = False
 		
 	#GETTERSs
 	#def get_Dest(self):
@@ -66,6 +78,106 @@ class Agent:
 		opposite = str(opposite)
 		
 		return getLastStepVehicleNumber(name) + getLastStepVehicleNumber(opposite)
+	
+	def give_my_edge(self):
+		traci.vehicle.getRouteIndex(self.id)
+	def get_Edge_Vehicle_At(self, id):
+		return get_Edge_ID(traci.vehicle.getRouteIndex(id))
+		
+	def update_edge(self):
+		if(self.edge == ""):
+			self.edge = traci.vehicle.getRoadID(str(self.id))
+			
+		if(self.edge != traci.vehicle.getRoadID(str(self.id))):
+			self.edge = traci.vehicle.getRoadID(str(self.id))
+			self.ChangeEdge = True
+	
+	def get_Edge_ID(self, node):
+		ret = 0
+		
+		#0 pour positif
+		#1 pour negatif
+		sign = 0
+		
+		print("---  " + node + "  ---")
+		if(node[0] == '-'):
+			print("...  " + node[2: len(node)] + "  ...")
+			ret =  int(node[2: len(node)])
+			sign = 1
+		else:
+			print("...  " + node[1: len(node)] + "  ...")
+			ret =  int(node[1: len(node)])
+			sign = 0
+			
+		return ret, sign
+		
+	def give_n(self, edge):
+		ret = 0
+		if(edge == 0 or edge == 1):
+			ret = 2
+		elif(edge == 7 or edge == 24 or edge == 8):
+			ret = 1
+		elif(edge == 16 or edge == 17 or edge == 18):
+			ret = 0
+			
+		return ret
+		
+		
+	def Options_Available(self, edge):
+		
+		#Renvoie les options de direction et l edge associe
+		#VERIFIER QUE LE EDGE EST UN NOM COMPREHENSIBLE
+		return MAP.info[edge]
+	
+	def Pop_at_Next(self, edge):
+			#renvoie un tuple avec la population des prochains edges
+		
+		opt = Options_Available(edge) #renvoie ( id_edge ou "", , )
+		ret = (-1, -1, -1)
+		
+		for it in opt:
+			if(it == ""):
+				print("-")
+			else:
+				it = traci.edge.getLastStepVehicleNumber(it)
+		
+		return ret
+		
+	def leftest(self, triple):
+	#renvoie l'edge le plus a gauche - ON SUPPOSE SANS CUL DE SAC
+		ret = ""
+		if(triple[0] != ""):
+			ret = triple[0]
+		else:
+			i = 0
+			rightest = opt[i]
+			while(rightest == ""):
+				if(i<3):
+					i += 1
+				if(opt[i] != ""):
+					rightest = opt[i]
+		
+		
+	
+	def turn_right(self):# """ ATTENTION IL NE CREE QU'UN CHEMIN PARTIEL  """
+		opt = Options_Available(self.edge)
+		i = 0
+		rightest = opt[i]
+		while(rightest != ""):
+			if(i<3):
+				i += 1
+			if(opt[i] != ""):
+				rightest = opt[i]
+			
+		if(rightest == ""):
+			return ("WHUT?")
+		else:
+			opt_1 = Options_Available(leftest(opt))
+			
+			
+	#def turn_stright(self):
+	
+	#def turn_left(self):
 	
 
 class RandomAgent(Agent):
@@ -128,7 +240,8 @@ class InterestingAgent(Agent):
 
 		# while (self.start_n == self.end_n):
 			# self.end_n = rd.randint(0, 2)
-			
+		bin = 0
+		
 		StartE = ["E0", "-E18",  "-E7"]
 		EndE = ["-E0","E1", "-E24", "-E7", "-E17", "E18"]
 		
@@ -156,9 +269,13 @@ class InterestingAgent(Agent):
 
 		Agent.ROAD_ID += 1
 		
-		self.start_n = int(start)
-		self.end_n = int(end)
+		self.start_n, bin = self.get_Edge_ID(start)
+		self.end_n, bin = self.get_Edge_ID(end)
+		
+		self.start_n = self.give_n(self.start_n)
+		self.end_n = self.give_n(self.start_n)
 
+		
 	def get_path(self):
 		""" Get the path to complete the route with SUMO's algo. """
 		return 1

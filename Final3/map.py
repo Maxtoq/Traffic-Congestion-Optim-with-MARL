@@ -6,13 +6,15 @@ from random import randint
 import constants as tc
 import numpy as np
 from Agent import *
+from mapinfo import *
 from DataParser import DataParser
 
 """Quelques variable globales pour le fun"""
 junctionID = 'gneJ33' #pour le module de stats
-N = 5 #population de la simu
+N = 20 #population de la simu
 POP = 0
 R = 0 #list of roads3
+I = 0
 
 Study_ID = list()
 
@@ -38,45 +40,49 @@ def get_options():
 
 			
 
-def CreateAgents(AgentList, Study_ID = None ):
-	i = 0
-		
+def CreateAgents(AgentList, i,  Study_ID = None ):	
 	while i < N:
-		
-		if id_list is not None:
+		print("Creating " + str(i))
+		if Study_ID is not None:
 			if(i < 5):
-				AgentList.insert(i , InterestingAgent(i, 1))
+				AgentList.insert(i , InterestingAgent(i))
 				Study_ID.insert(i, i)
+				AgentList[i].update_edge()
+				i += 1
 			else : 
 				AgentList.insert(i , RandomAgent(i))
-		
+				AgentList[i].update_edge()
+				i += 1
 		else : 
 			AgentList.insert(i , RandomAgent(i))
-	i += 1
+			AgentList[i].update_edge()
+			i += 1
+		
+	
+	return i
 		
 		
-def MaintainAgents(AgentList, Study_ID = None):
+def MaintainAgents(AgentList, I, Study_ID = None):
 	Arrived = traci.simulation.getArrivedIDList()
 	print("ARRIVED : " + str(Arrived))
 	
 	global POP
+	print("Major I = " + str(I))
 	
 	if (len(Arrived) > 0):#des agents disparus
 		for d in Arrived:
-			if(int(d) in Study_ID)
-				AgentList.insert(int(d), InterestingAgent(int(d)))
+			if(int(d) in Study_ID):
+				AgentList.insert(int(d), InterestingAgent(I))
+				Study_ID.insert(len(Study_ID), I)
 			else : 
-				AgentList.insert(int(d), RandomAgent(int(d)))
+				AgentList.insert(int(d), RandomAgent(I))
+				
+			POP += 1
 			
-			
-	"""i = traci.simulation.getMinExpectedNumber()
-	if(i != (N-1)):
-		while(i < N):
-			AgentList.insert(i , RandomAgent(i))
-			i += 1
-			POP += 1"""
+			I += 1
 	
-
+	return I
+		
 
 def Interact(AgentList):
 
@@ -92,10 +98,8 @@ def Interact(AgentList):
 	#Ag.set_Dest(v)
 	
 	
-	
-
 # contains TraCI control loop
-def run(Study_ID):
+def run(Study_ID, I):
 
 	#Initialisation pre step 1
 	go = 1
@@ -107,13 +111,17 @@ def run(Study_ID):
 	#Initialisation post step 1
 	
 	AgentList = list()
-	CreateAgents(N, AgentList, Study_ID)
+	I = CreateAgents(AgentList, I, Study_ID)
 	POP = N
 	
-	while POP > 0:
+	while (POP > 0 and step < 1000): #SECONDE CONDITION TEMPORAIRE
 		traci.simulationStep()
 		POP  -= traci.simulation.getArrivedNumber()
-		MaintainAgents(AgentList, Study_ID)
+		for a in AgentList:
+			if(a.id < I-4):
+				a.update_edge()
+		
+		I = MaintainAgents(AgentList, I,  Study_ID)
 		
 		print(str(step) + " - pop : " + str(POP))
 
@@ -144,10 +152,13 @@ def run(Study_ID):
 
 		step += 1
 	
+	
+	for it in Study_ID:
+		print (str(it) + " - ")
 	traci.close()
 	sys.stdout.flush()
 	
-	return Study_ID
+	return Study_ID, I
 
 
 # main entry point
@@ -162,6 +173,6 @@ if __name__ == "__main__":
 
     # traci starts sumo as a subprocess and then this script connects and runs
     traci.start([sumoBinary, "-c", "map.sumocfg" , "--tripinfo-output", "data.xml"])
-    Study_ID = run(Study_ID)
+    Study_ID, I = run(Study_ID, I)
     data = DataParser("data.xml", Study_ID)
 
