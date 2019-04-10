@@ -102,6 +102,12 @@ class Agent:
 				self.edge = self.get_Edge_Vehicle_At(str(self.id))
 				print("new ns : " + str(self.edge))
 	
+	def isArrived(self):
+		if(self.get_Dest()[len(self.get_Dest())] == get_Edge_Vehicle_At(str(self.id))):
+			return true
+		else:
+			return false
+	
 	def get_Edge_ID(self, node):
 		ret = 0
 		
@@ -269,15 +275,19 @@ class RandomAgent(Agent):
 
 			i = 0
 			j = 0
-			for it in self.MAP:
-				if(i == start_edge):
-					self.pos = it
-					j += 1
-				if(i == dest_edge):
-					self.dest = it
-					j += 1
-				if(j == 2):
-					break
+			#while(j != 2):
+				for it in self.MAP.info:
+					if(i == start_edge):
+						self.pos = it
+						j += 1
+					if(i == dest_edge):
+						self.dest = it
+						j += 1
+					if(j == 2):
+						break
+					i += 1
+					if(i > len(self.MAP.info)):
+						i = 0
 			#EdgeL = traci.edge.getIDList()
 
 			#self.pos = EdgeL[start_edge]
