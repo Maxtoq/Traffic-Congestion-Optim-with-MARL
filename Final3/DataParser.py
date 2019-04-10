@@ -7,7 +7,8 @@ class DataParser:
 		self.name = name
 		self.id_list = id_list
 		parsedXML = et.parse(name)
-		dfcols = ['Id','vType','departLane' ,'arrivalLane','timeLoss', 'waitingTime', 'routeLength', 'duration']   
+		dfcols = ['Id','vType','departLane' ,'arrivalLane','timeLoss', 
+				  'waitingTime', 'routeLength', 'duration']   
 		df = pd.DataFrame(columns=dfcols)
 		for child in parsedXML.getroot():
 			tripinfo = child.get('tripinfo')
@@ -22,7 +23,7 @@ class DataParser:
 
 			if self.id_list is not None:
 				if Id in self.id_list:				
-					df=df.append(pd.Series([Id, vType, departLane, arrivalLane,
+					df = df.append(pd.Series([Id, vType, departLane, arrivalLane,
 									timeLoss, waitingTime, routeLength,
 									duration], index=dfcols), ignore_index=True)
 			else:
