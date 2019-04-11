@@ -203,8 +203,8 @@ class Agent:
 			return ("WHUT?")
 		else:
 			opt_1 = self.Options_Available(rightest)
-			
-			self.set_Dest(str(opt_1[0]))
+			if(str(opt_1[0]) != ""):
+				self.set_Dest(str(opt_1[0]))
 			
 			
 			
@@ -303,7 +303,9 @@ class InterestingAgent(Agent):
 		self.end_n = -1
 
 		self.find_interesting_route()
-
+		
+		traci.vehicle.setSpeedFactor(str(self.id), 1.5)
+		
 	def find_interesting_route(self):
 		""" Find an interesting route. """
 		# self.start_n = rd.randint(0, 2)
