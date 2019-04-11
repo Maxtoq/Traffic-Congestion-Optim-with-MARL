@@ -21,7 +21,7 @@ class OurAgent(InterestingAgent):
     def find_state(self):
         """ Translate data from SUMO to a state usable by the QLU. """
         # Get the edge where we are
-        edge = self.get_Edge_Vehicle_At()
+        edge = self.get_Edge_ID()
 
         # Get the population at the next edges
         pop_next_edges = self.Pop_at_Next()

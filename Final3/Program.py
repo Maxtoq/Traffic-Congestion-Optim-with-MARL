@@ -67,11 +67,11 @@ class Program:
                 # If we've already taken an action
                 if a.action != -1:
                     # Judge this action
-                    reward = a.curr_state[3 + a.action]
+                    reward = -5 + a.curr_state[3 + a.action] / 2
 
                     # Check if we are at destination
                     if a.isArrived():
-                        reward += 100
+                        reward += 200
 
                     a.judge_action(reward)
                 else:
@@ -85,7 +85,7 @@ class Program:
         """ Run the main execution. """
         end = False
         pop = 100
-        nb_step = 1000
+        nb_step = 5000
 
         # Get options
         options = get_options()
@@ -115,6 +115,7 @@ class Program:
 
         # Main loop
         for i in range(nb_step):
+            print('Step #' + str(i))
             traci.simulationStep()
 
             self.maintain_rand_agents()
@@ -134,6 +135,8 @@ class Program:
         
         data_dum = DataParser("data.xml", list(self.dummy_agents.keys()))
         data_our = DataParser("data.xml", list(self.our_agents.keys()))
+
+        self.qlu.save_q_table()
 
 
 if __name__ == "__main__":

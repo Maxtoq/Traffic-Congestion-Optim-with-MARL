@@ -92,40 +92,38 @@ class Agent:
 		if(self.edge == ""):
 			#if( self.id in  traci.simulation.getLoadedIDList()):
 			self.edge = self.get_Edge_Vehicle_At()
-			print("Empty : " + str(self.edge))
 		else:
-			if(self.edge is not self.get_Edge_Vehicle_At()):#pour le flag
+			if(self.edge is not self.get_Edge_Vehicle_At() and self.get_Edge_Vehicle_At() in self.MAP.info):  # pour le flag
 				self.edge = self.get_Edge_Vehicle_At()
-				print("new namebis : " + str(self.edge))
 				self.ChangeEdge = True
-			else:
-				self.edge = self.get_Edge_Vehicle_At()
-				print("new ns : " + str(self.edge))
+			#else:
+			#	self.edge = self.get_Edge_Vehicle_At()
+			#	print("new ns : " + str(self.edge))
 	
 	def isArrived(self):
-		if(self.get_Dest()[len(self.get_Dest())] == get_Edge_Vehicle_At(str(self.id))):
+		if(self.get_Dest()[-1] == self.get_Edge_Vehicle_At()):
 			return True
 		else:
 			return False
 	
-	def get_Edge_ID(self, node):
+	def get_Edge_ID(self, node=None):
 		ret = 0
+
+		if node is None:
+			node = self.get_Edge_Vehicle_At()
 		
 		#0 pour positif
 		#1 pour negatif
 		sign = 0
 		
-		print("---  " + node + "  ---")
 		if(node[0] == '-'):
-			print("...  " + node[2: len(node)] + "  ...")
 			ret =  int(node[2: len(node)])
 			sign = 1
 		else:
-			print("...  " + node[1: len(node)] + "  ...")
 			ret =  int(node[1: len(node)])
 			sign = 0
 			
-		return ret, sign
+		return (ret, sign)
 		
 	def give_n(self, edge):
 		ret = 0
@@ -153,24 +151,22 @@ class Agent:
 		#	print("WHAAAT")		
 		return self.MAP.info[edge]
 	
-	def Pop_at_Next(self, edge):
+	def Pop_at_Next(self):
 			#renvoie un tuple avec la population des prochains edges
 		
-		opt = Options_Available(edge) #renvoie ( id_edge ou "", , )
+		opt = self.Options_Available(self.get_Edge_Vehicle_At()) #renvoie ( id_edge ou "", , )
 		a = -1
 		b = -1
 		c = -1
 		
-		
-		if(opt[0] == "" or opt[2] == "" or opt[1] == ""):
-			print("-")
-		
-		a = traci.edge.getLastStepVehicleNumber(opt[0])
-		b = traci.edge.getLastStepVehicleNumber(opt[1])
-		c = traci.edge.getLastStepVehicleNumber(opt[2])
+		if (opt[0] != ""):
+			a = traci.edge.getLastStepVehicleNumber(opt[0])
+		if (opt[1] != ""):
+			b = traci.edge.getLastStepVehicleNumber(opt[1])
+		if (opt[2] != ""):
+			c = traci.edge.getLastStepVehicleNumber(opt[2])
 		
 		ret = (a, b, c)
-			
 		
 		return ret
 		
@@ -208,13 +204,7 @@ class Agent:
 		else:
 			opt_1 = self.Options_Available(rightest)
 			
-			print(" 1er choix " + str(opt))
-			print("Route avant::" + str(self.get_Dest()))
-			print(" choix a droite " + str(opt_1))
-			
-			
 			self.set_Dest(str(opt_1[0]))
-			print("Route apres :: " + str(self.get_Dest()))
 			
 			
 			
@@ -228,31 +218,19 @@ class Agent:
 		else:
 			opt_1 = self.Options_Available(straightest)
 			
-			print(" 1er choix " + str(opt))
-			print("Route avant::" + str(self.get_Dest()))
-			print(" choix en face " + str(opt_1))
-			
-			
 			self.set_Dest(str(opt_1[0]))
-			print("Route apres :: " + str(self.get_Dest()))
 	
 	def turn_left(self):
 		opt = self.Options_Available(self.edge)
 		i = 0
 		leftest = opt[0]
 		
-		if(rightest == ""):
+		if(leftest == ""):
 			return ("WHUT?")
 		else:
 			opt_1 = self.Options_Available(leftest)
 			
-			print(" 1er choix " + str(opt))
-			print("Route avant::" + str(self.get_Dest()))
-			print(" choix a gauche " + str(opt_1))
-			
-			
 			self.set_Dest(str(opt_1[0]))
-			print("Route apres :: " + str(self.get_Dest()))
 	
 
 class RandomAgent(Agent):
@@ -362,8 +340,8 @@ class InterestingAgent(Agent):
 
 		Agent.ROAD_ID += 1
 		
-		self.start_n, bin = self.get_Edge_ID(start)
-		self.end_n, bin = self.get_Edge_ID(end)
+		self.start_n, bin = self.get_Edge_ID(node=start)
+		self.end_n, bin = self.get_Edge_ID(node=end)
 		
 		self.start_n = self.give_n(self.start_n)
 		self.end_n = self.give_n(self.start_n)

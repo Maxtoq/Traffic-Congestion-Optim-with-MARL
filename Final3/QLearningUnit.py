@@ -40,14 +40,14 @@ class QLearningUnit:
         
         # Exploration rate
         self.eps = 1
-        self.min_eps = 0.1
+        self.min_eps = 0.01
         self.decay_eps = 0.001
         
         # Learning rate
-        self.lr = 0.001
+        self.lr = 0.01
         
         # Discount rate
-        self.dr = 0.9
+        self.dr = 0.5
 
     def save_q_table(self):
         self.qtable.dump('q_table.dat')
@@ -135,3 +135,8 @@ class QLearningUnit:
         new_q = self.lr * (reward + self.dr * np.amax(self.qtable[self.get_state_id(use_new_state)]) 
                  - self.qtable[self.get_state_id(use_curr_state), action])
         self.update_q_value(use_curr_state, action, new_q)
+
+if __name__ == "__main__":
+    q = QLearningUnit()
+    q.load_q_table()
+    print(q.qtable)
